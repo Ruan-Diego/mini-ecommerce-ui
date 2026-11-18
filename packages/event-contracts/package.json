@@ -1,14 +1,27 @@
 {
   "name": "@ruan-diego/mini-event-contracts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tipos e helpers dos eventos trocados entre os microfrontends do Mini E-commerce",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
-  "files": ["dist"],
-  "repository": { "type": "git", "url": "https://github.com/Ruan-Diego/mini-ecommerce-ui.git", "directory": "packages/event-contracts" },
-  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ruan-Diego/mini-ecommerce-ui.git",
+    "directory": "packages/event-contracts"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
