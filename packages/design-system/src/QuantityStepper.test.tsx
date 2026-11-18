@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { QuantityStepper } from './QuantityStepper';
+import { QuantityStepper } from './QuantityStepper.js';
 import { violacoesAxe } from './test-utils/axe';
 
 function StepperControlado({ inicial, max }: { inicial: number; max?: number }) {

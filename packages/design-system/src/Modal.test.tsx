@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { Modal } from './Modal';
+import { Modal } from './Modal.js';
 import { violacoesAxe } from './test-utils/axe';
 
 function Exemplo() {

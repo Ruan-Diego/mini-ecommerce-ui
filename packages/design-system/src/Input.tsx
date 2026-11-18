@@ -1,5 +1,5 @@
 import { useId, type InputHTMLAttributes, type ReactNode } from 'react';
-import { cx } from './classes';
+import { cx } from './classes.js';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Texto do <label>. Obrigatório: todo campo precisa de um nome acessível. */

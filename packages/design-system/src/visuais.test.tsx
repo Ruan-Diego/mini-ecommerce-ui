@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { Button } from './Button';
-import { Card } from './Card';
-import { Pill } from './Pill';
-import { ProductObject } from './ProductObject';
+import { Button } from './Button.js';
+import { Card } from './Card.js';
+import { Pill } from './Pill.js';
+import { ProductObject } from './ProductObject.js';
 import { violacoesAxe } from './test-utils/axe';
 
 // Componentes sem comportamento próprio: confere as classes do canvas e o axe.
