@@ -13,6 +13,7 @@ Pacotes compartilhados entre o [shell](https://github.com/Ruan-Diego/mini-ecomme
 pnpm install
 pnpm test
 pnpm build
+pnpm changeset   # registra mudança num pacote
 ```
 
 ## Design system
@@ -41,12 +42,23 @@ Os testes rodam o axe em cada componente. Como o jsdom não calcula contraste, `
 
 ## Consumindo nos microfrontends
 
-Os pacotes vão para o GitHub Packages (issue "Publicação dos pacotes no GitHub Packages via Actions"). Para instalar, cada repositório precisa de um `.npmrc`:
+Os pacotes são publicados no GitHub Packages. O registry npm do GitHub exige autenticação mesmo para pacote público, então cada repositório que instala precisa de um `.npmrc` na raiz (pode ser commitado, porque o token vem de variável de ambiente):
 
 ```
 @ruan-diego:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
+
+- **Na sua máquina:** crie um token clássico em GitHub → Settings → Developer settings → Personal access tokens, só com o escopo `read:packages`, e exporte como `GITHUB_TOKEN` antes do `pnpm install`.
+- **No CI do MFE:** use `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` no passo de install, com `permissions: packages: read`. Na página de cada pacote (Package settings → Manage Actions access), dê acesso de leitura ao repositório do MFE.
+
+## Versionamento e publicação
+
+Changesets versiona os dois pacotes; a publicação segue o ADR-0004 (nada roda em `dev`/`feat`).
+
+1. Numa feature que muda um pacote: `pnpm changeset`, escolha os pacotes e o tipo (patch, minor, major) e commite o arquivo de `.changeset/`.
+2. No fim da fase, na `dev`: `pnpm versionar` sobe as versões, escreve os `CHANGELOG.md` e atualiza o lockfile. Commite e abra o PR da fase para a `main`.
+3. Depois do merge, crie uma release no GitHub a partir da `main` (tag `fase-N`, por exemplo). O workflow `publicar.yml` testa, builda e roda `changeset publish`, que publica só as versões que ainda não estão no registry.
 
 ## Event contracts
 
