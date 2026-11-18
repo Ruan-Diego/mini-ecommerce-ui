@@ -1,4 +1,16 @@
 export { Button } from './Button';
 export type { ButtonProps, VarianteBotao } from './Button';
-// Próximos componentes (issue "design-system: tokens e componentes base"):
-// Input, Card, Pill, Chip, Modal, QuantityStepper, ProductObject
+export { Input } from './Input';
+export type { InputProps } from './Input';
+export { Card } from './Card';
+export type { CardProps } from './Card';
+export { Pill } from './Pill';
+export type { PillProps, TomPill } from './Pill';
+export { Chip } from './Chip';
+export type { ChipProps } from './Chip';
+export { Modal } from './Modal';
+export type { ModalProps } from './Modal';
+export { QuantityStepper } from './QuantityStepper';
+export type { QuantityStepperProps } from './QuantityStepper';
+export { ProductObject } from './ProductObject';
+export type { ProductObjectProps, FormaObjeto, MaterialObjeto } from './ProductObject';
