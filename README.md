@@ -42,15 +42,18 @@ Os testes rodam o axe em cada componente. Como o jsdom não calcula contraste, `
 
 ## Consumindo nos microfrontends
 
-Os pacotes são publicados no GitHub Packages. O registry npm do GitHub exige autenticação mesmo para pacote público, então cada repositório que instala precisa de um `.npmrc` na raiz (pode ser commitado, porque o token vem de variável de ambiente):
+Os pacotes são publicados no GitHub Packages. O registry npm do GitHub exige autenticação mesmo para pacote público.
+
+**No repositório** (commitado), um `.npmrc` só com o registry do escopo, **sem token**:
 
 ```
 @ruan-diego:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
-- **Na sua máquina:** crie um token clássico em GitHub → Settings → Developer settings → Personal access tokens, só com o escopo `read:packages`, e exporte como `GITHUB_TOKEN` antes do `pnpm install`.
-- **No CI do MFE:** use `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` no passo de install, com `permissions: packages: read`. Na página de cada pacote (Package settings → Manage Actions access), dê acesso de leitura ao repositório do MFE.
+O pnpm 10 ignora token com `${VARIAVEL}` num `.npmrc` de projeto (proteção contra vazar segredo para um registry malicioso). O token vai num `.npmrc` de usuário:
+
+- **Na sua máquina:** o `gh` precisa do escopo `read:packages` (`gh auth refresh -h github.com -s read:packages`, uma vez). Depois, no seu `~/.npmrc`, adicione `//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}` e, antes do `pnpm install`, rode `$env:GITHUB_TOKEN = gh auth token` no PowerShell.
+- **No CI do MFE:** `actions/setup-node` com `registry-url: https://npm.pkg.github.com` e `scope: "@ruan-diego"` cria esse `.npmrc` de usuário; o passo de install recebe `NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}` e o workflow precisa de `permissions: packages: read`. Se o install falhar com 403, libere o repositório do MFE em Package settings → Manage Actions access, na página de cada pacote.
 
 ## Versionamento e publicação
 
