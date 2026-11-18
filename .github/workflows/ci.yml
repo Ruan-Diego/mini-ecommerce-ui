@@ -1,9 +1,15 @@
 name: CI
 
+# ADR-0004: CI só roda em PR para main (fim de cada fase) ou manualmente.
+# Não adicione gatilho de push nem de PR para dev/feat: a cota de Actions é limitada.
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
