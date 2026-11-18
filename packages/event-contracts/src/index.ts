@@ -1,6 +1,7 @@
 /**
  * Contratos de eventos entre microfrontends.
- * Regra: uma mudança incompatível num payload exige um NOVO nome de evento.
+ * Regra: uma mudança incompatível num payload exige um NOVO nome de evento
+ * (verificada em tempo de compilação por contrato-congelado.ts).
  */
 export type EventosMini = {
   /** Emitido pelo catálogo (e pela conta, em "Comprar novamente"). Ouvido pelo carrinho. */
@@ -19,9 +20,23 @@ export type EventosMini = {
 
 export type NomeEvento = keyof EventosMini;
 
+export type Ouvinte<E extends NomeEvento> = (payload: EventosMini[E]) => void;
+
+/** Emite um evento tipado como CustomEvent. Payload errado para o nome do evento não compila. */
+export function emit<E extends NomeEvento>(evento: E, payload: EventosMini[E], alvo: EventTarget = window): void {
+  alvo.dispatchEvent(new CustomEvent(evento, { detail: payload }));
+}
+
+/** Ouve um evento tipado. Devolve a função que cancela a inscrição. */
+export function on<E extends NomeEvento>(evento: E, ouvinte: Ouvinte<E>, alvo: EventTarget = window): () => void {
+  const handler = (e: Event) => ouvinte((e as CustomEvent<EventosMini[E]>).detail);
+  alvo.addEventListener(evento, handler);
+  return () => alvo.removeEventListener(evento, handler);
+}
+
 export interface EventBus {
   emit<E extends NomeEvento>(evento: E, payload: EventosMini[E]): void;
-  on<E extends NomeEvento>(evento: E, ouvinte: (payload: EventosMini[E]) => void): () => void;
+  on<E extends NomeEvento>(evento: E, ouvinte: Ouvinte<E>): () => void;
 }
 
 /** Props que o shell passa para o módulo ./App de cada microfrontend. */
@@ -31,15 +46,13 @@ export interface PropsRemoto {
   eventBus: EventBus;
 }
 
+/**
+ * Event bus preso a um alvo. O shell cria um sobre window e passa para os MFEs;
+ * no modo standalone e nos testes, use um EventTarget próprio.
+ */
 export function criarEventBus(alvo: EventTarget = window): EventBus {
   return {
-    emit(evento, payload) {
-      alvo.dispatchEvent(new CustomEvent(evento, { detail: payload }));
-    },
-    on(evento, ouvinte) {
-      const handler = (e: Event) => ouvinte((e as CustomEvent).detail);
-      alvo.addEventListener(evento, handler);
-      return () => alvo.removeEventListener(evento, handler);
-    },
+    emit: (evento, payload) => emit(evento, payload, alvo),
+    on: (evento, ouvinte) => on(evento, ouvinte, alvo),
   };
 }

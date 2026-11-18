@@ -48,7 +48,31 @@ Os pacotes vão para o GitHub Packages (issue "Publicação dos pacotes no GitHu
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
+## Event contracts
+
+```ts
+import { criarEventBus, emit, on } from '@ruan-diego/mini-event-contracts';
+
+// Dentro de um MFE, use o eventBus que o shell passa em PropsRemoto:
+eventBus.emit('carrinho:adicionar-item', { produtoId: 'orbe-cromo', quantidade: 1 });
+const sair = eventBus.on('carrinho:atualizado', ({ quantidadeTotal }) => atualizarBadge(quantidadeTotal));
+
+// emit/on avulsos (sobre window, ou um EventTarget passado como 3º argumento) e criarEventBus(alvo)
+// servem para o shell e para o modo standalone.
+```
+
+| Evento | Payload | Quem emite → quem ouve |
+| --- | --- | --- |
+| `carrinho:adicionar-item` | `{ produtoId, quantidade }` | catálogo, conta → carrinho |
+| `carrinho:atualizado` | `{ quantidadeTotal, subtotal }` | carrinho → shell (badge) |
+| `carrinho:limpo` | `{}` | checkout → carrinho |
+| `carrinho:abrir` | `{}` | shell → carrinho (drawer) |
+| `auth:alterado` | `{ autenticado, nome?, papeis }` | shell → todos |
+| `navegar` | `{ rota }` | qualquer MFE → shell |
+
+Payload errado, campo a mais ou nome de evento inexistente não compilam.
+
 ## Regras
 
-- Mudança incompatível num evento exige um novo nome de evento, não uma nova versão do mesmo.
+- Mudança incompatível num evento exige um novo nome de evento, não uma nova versão do mesmo. O `pnpm typecheck` garante isso: `src/contrato-congelado.ts` guarda os payloads publicados e a compilação falha se um evento for apagado, perder um campo, trocar um tipo ou ganhar um campo obrigatório. Adicionar campo opcional é permitido.
 - Os componentes seguem as telas do canvas de design e passam em checagem de acessibilidade.
