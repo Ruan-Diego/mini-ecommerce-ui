@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
-import { cx } from './classes';
+import { cx } from './classes.js';
 
 export interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Filtro selecionado. Vira aria-pressed para o leitor de tela anunciar o estado. */

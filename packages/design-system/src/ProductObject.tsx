@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { cx } from './classes';
+import { cx } from './classes.js';
 
 export type FormaObjeto = 'esfera' | 'anel' | 'capsula' | 'bloco';
 export type MaterialObjeto = 'chrome' | 'lime' | 'clay' | 'ink' | 'amber' | 'iris';

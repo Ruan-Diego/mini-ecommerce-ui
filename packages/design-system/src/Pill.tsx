@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react';
-import { cx } from './classes';
+import { cx } from './classes.js';
 
 export type TomPill = 'neutro' | 'destaque' | 'aviso' | 'erro' | 'sucesso';
 
